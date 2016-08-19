@@ -72,6 +72,7 @@ class PageRouteDefaultsProvider implements RouteDefaultsProviderInterface
             'view' => $metadata->view,
             'object' => $object,
             'structure' => $this->documentToStructure($object),
+            'document' => $object,
         ];
     }
 

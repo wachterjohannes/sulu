@@ -179,6 +179,7 @@ class ContentRouteProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $routes);
         $this->assertEquals($pageBridge->reveal(), $defaults['structure']);
+        $this->assertEquals($document->reveal(), $defaults['document']);
         $this->assertEquals(false, $defaults['partial']);
     }
 
@@ -232,6 +233,7 @@ class ContentRouteProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $routes);
         $this->assertEquals($pageBridge->reveal(), $defaults['structure']);
+        $this->assertEquals($document->reveal(), $defaults['document']);
         $this->assertEquals(true, $defaults['partial']);
     }
 
@@ -405,6 +407,7 @@ class ContentRouteProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(1, $routes);
         $this->assertEquals($pageBridge->reveal(), $routes->getIterator()->current()->getDefaults()['structure']);
+        $this->assertEquals($document->reveal(), $routes->getIterator()->current()->getDefaults()['document']);
     }
 
     public function testGetCollectionForPartialMatch()

@@ -15,6 +15,7 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Sulu\Bundle\ContentBundle\Document\BasePageDocument;
+use Sulu\Bundle\ContentBundle\Document\PageDocument;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
 use Sulu\Component\DocumentManager\DocumentManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -104,6 +105,13 @@ class PageObjectProvider implements PreviewObjectProviderInterface
      */
     public function serialize($object)
     {
+        // FIXME parent and children will not be usable after serialize/deserialize them.
+
+        if ($object instanceof PageDocument) {
+            // trigger lazy loading of parent
+            $object->getParent()->getTitle();
+        }
+
         return $this->serializer->serialize(
             $object,
             'json',
