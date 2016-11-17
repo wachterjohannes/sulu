@@ -3,6 +3,7 @@ CHANGELOG for Sulu
 
 * dev-develop
     * BUGFIX      #3043 [ContentBudle]        Fixed bind null values on managed-structure
+    * FEATURE     #3037 [AutomationBundle]    Added automation-bundle
     * ENHANCEMENT #2856 [ContactBundle]       Removed not needed css
     * BUGFIX      #3034 [LocationBundle]      Load external map data over https
     * BUGFIX      #3031 [AdminBundle]         Fixed defaultDisplayOption in media selectio content type
