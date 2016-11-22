@@ -15,6 +15,7 @@ use Sulu\Bundle\AutomationBundle\Events\Events;
 use Sulu\Bundle\AutomationBundle\Events\TaskCreateEvent;
 use Sulu\Bundle\AutomationBundle\Events\TaskRemoveEvent;
 use Sulu\Bundle\AutomationBundle\Events\TaskUpdateEvent;
+use Sulu\Bundle\AutomationBundle\Exception\TaskNotFoundException;
 use Sulu\Bundle\AutomationBundle\Tasks\Model\TaskInterface;
 use Sulu\Bundle\AutomationBundle\Tasks\Model\TaskRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -49,7 +50,12 @@ class TaskManager implements TaskManagerInterface
      */
     public function findById($id)
     {
-        return $this->repository->findById($id);
+        $task = $this->repository->findById($id);
+        if (!$task) {
+            throw new TaskNotFoundException($id);
+        }
+
+        return $task;
     }
 
     /**

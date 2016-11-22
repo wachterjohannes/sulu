@@ -14,7 +14,7 @@ namespace Sulu\Bundle\AutomationBundle\Tasks\Model;
 use Sulu\Component\Persistence\Model\AuditableInterface;
 
 /**
- * Interface TaskInterface.
+ * Interface for tasks it contains functions which are necessary for managing tasks.
  */
 interface TaskInterface extends AuditableInterface
 {

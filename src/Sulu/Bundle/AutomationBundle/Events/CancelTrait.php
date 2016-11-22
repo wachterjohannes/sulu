@@ -34,13 +34,11 @@ trait CancelTrait
     /**
      * Cancel Event.
      *
-     * @param bool $canceled
-     *
      * @return $this
      */
-    public function cancel($canceled = true)
+    public function cancel()
     {
-        $this->canceled = $canceled;
+        $this->canceled = true;
         $this->stopPropagation();
 
         return $this;

@@ -11,6 +11,7 @@
 
 namespace Sulu\Bundle\AutomationBundle\DependencyInjection;
 
+use Sulu\Bundle\AutomationBundle\Exception\TaskNotFoundException;
 use Sulu\Bundle\PersistenceBundle\DependencyInjection\PersistenceExtensionTrait;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -40,6 +41,19 @@ class SuluAutomationExtension extends Extension implements PrependExtensionInter
                                 'path' => __DIR__ . '/../Resources/config/serializer',
                                 'namespace_prefix' => 'Sulu\Bundle\AutomationBundle\Entity',
                             ],
+                        ],
+                    ],
+                ]
+            );
+        }
+
+        if ($container->hasExtension('fos_rest')) {
+            $container->prependExtensionConfig(
+                'fos_rest',
+                [
+                    'exception' => [
+                        'codes' => [
+                            TaskNotFoundException::class => 404,
                         ],
                     ],
                 ]

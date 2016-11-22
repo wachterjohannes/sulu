@@ -15,13 +15,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use JMS\Serializer\DeserializationContext;
 use Sulu\Bundle\AutomationBundle\Entity\Task;
+use Sulu\Bundle\AutomationBundle\Exception\TaskNotFoundException;
 use Sulu\Bundle\AutomationBundle\Tasks\Manager\TaskManagerInterface;
 use Sulu\Component\Rest\ListBuilder\FieldDescriptorInterface;
 use Sulu\Component\Rest\ListBuilder\ListRepresentation;
 use Sulu\Component\Rest\RestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Provides api for tasks.
@@ -72,17 +72,14 @@ class TaskController extends RestController implements ClassResourceInterface
      * @param int $id
      *
      * @return Response
+     *
+     * @throws TaskNotFoundException
      */
     public function getAction($id)
     {
         $manager = $this->getTaskManager();
-        $task = $manager->findById($id);
 
-        if (!$task) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->handleView($this->view($task));
+        return $this->handleView($this->view($manager->findById($id)));
     }
 
     /**
