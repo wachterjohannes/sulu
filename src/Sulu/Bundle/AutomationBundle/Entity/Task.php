@@ -22,7 +22,7 @@ class Task implements TaskInterface
     use AuditableTrait;
 
     /**
-     * @var int
+     * @var string
      */
     private $id;
 
@@ -55,11 +55,7 @@ class Task implements TaskInterface
     }
 
     /**
-     * Set id.
-     *
-     * @param int $id
-     *
-     * @return $this
+     * {@inheritdoc}
      */
     public function setId($id)
     {

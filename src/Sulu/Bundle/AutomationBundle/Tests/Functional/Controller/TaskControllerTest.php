@@ -42,9 +42,14 @@ class TaskControllerTest extends SuluTestCase
         $embedded = $responseData['_embedded']['tasks'];
 
         for ($i = 0, $length = count($postData); $i < $length; ++$i) {
-            $this->assertEquals($postData[$i]['id'], $embedded[$i]['id']);
-            $this->assertEquals($postData[$i]['taskName'], $embedded[$i]['taskName']);
-            $this->assertEquals($postData[$i]['schedule'], $embedded[$i]['schedule']);
+            $this->assertContains(
+                [
+                    'id' => $postData[$i]['id'],
+                    'taskName' => $postData[$i]['taskName'],
+                    'schedule' => $postData[$i]['schedule'],
+                ],
+                $embedded
+            );
         }
     }
 
@@ -63,13 +68,12 @@ class TaskControllerTest extends SuluTestCase
         $this->assertHttpStatusCode(200, $client->getResponse());
 
         $responseData = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals(3, $responseData['total']);
-        $this->assertCount(3, $responseData['_embedded']['tasks']);
+        $this->assertEquals(2, $responseData['total']);
+        $this->assertCount(2, $responseData['_embedded']['tasks']);
 
         $embedded = $responseData['_embedded']['tasks'];
-
         for ($i = 0, $length = count($ids); $i < $length; ++$i) {
-            $this->assertEquals($postData[$i]['id'], $embedded[$i]['id']);
+            $this->assertEquals($ids[$i], $embedded[$i]['id']);
         }
     }
 
