@@ -12,5 +12,6 @@
 
         <field name="taskName" type="string" column="taskName"/>
         <field name="schedule" type="datetime" column="schedule"/>
+        <field name="locale" type="string" column="locale" length="5"/>
     </entity>
 </doctrine-mapping>

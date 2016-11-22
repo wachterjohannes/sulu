@@ -60,6 +60,9 @@ class TaskController extends RestController implements ClassResourceInterface
         if ($entityId = $request->get('entity-id')) {
             $listBuilder->where($fieldDescriptors['entityId'], $entityId);
         }
+        if ($locale = $request->get('locale')) {
+            $listBuilder->where($fieldDescriptors['locale'], $locale);
+        }
 
         $ids = null;
         if ($request->get('ids') !== null) {
