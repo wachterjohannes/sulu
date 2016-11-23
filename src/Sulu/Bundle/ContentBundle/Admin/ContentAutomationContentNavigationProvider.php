@@ -13,7 +13,6 @@ namespace Sulu\Bundle\ContentBundle\Admin;
 
 use Sulu\Bundle\AdminBundle\Navigation\ContentNavigationItem;
 use Sulu\Bundle\AdminBundle\Navigation\ContentNavigationProviderInterface;
-use Sulu\Bundle\AdminBundle\Navigation\DisplayCondition;
 use Sulu\Bundle\ContentBundle\Document\PageDocument;
 
 /**
@@ -33,11 +32,6 @@ class ContentAutomationContentNavigationProvider implements ContentNavigationPro
         $automation->setComponent('automation-tab@suluautomation');
         $automation->setComponentOptions(['entityClass' => PageDocument::class]);
         $automation->setDisplay(['edit']);
-        $automation->setDisplayConditions(
-            [
-                new DisplayCondition('url', DisplayCondition::OPERATOR_NOT_EQUAL, '/'),
-            ]
-        );
 
         return [$automation];
     }

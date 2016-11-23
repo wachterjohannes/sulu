@@ -13,11 +13,7 @@ define(['underscore', 'services/husky/util'], function(_, Util) {
 
     var url = _.template('/admin/api/tasks<% if(!!id) { %>/<%= id %><% } %>');
 
-    /** @constructor **/
-    function Manager() {
-    }
-
-    Manager.prototype = {
+    return {
         getUrl: function(entityClass, entityId) {
             return url({id: null}) + '?entityClass=' + entityClass + '&entity-id=' + entityId;
         },
@@ -34,6 +30,4 @@ define(['underscore', 'services/husky/util'], function(_, Util) {
             return Util.save(url({id: null}) + '?ids=' + ids.join(','), 'DELETE');
         }
     };
-
-    return new Manager();
 });
