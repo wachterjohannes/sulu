@@ -105,6 +105,7 @@ class TaskControllerTest extends SuluTestCase
                     'handlerClass' => $items[$i]['handlerClass'],
                     'taskName' => $items[$i]['taskName'],
                     'schedule' => $items[$i]['schedule'],
+                    'handlerClass' => $items[$i]['handlerClass'],
                 ],
                 $embedded
             );

@@ -172,7 +172,7 @@ class TaskController extends RestController implements ClassResourceInterface
         );
         $task = $manager->create($task);
 
-        $this->getEntityManager()->flush();
+        $this->getEntityManager()->flush($task);
 
         return $this->handleView($this->view($task));
     }
@@ -195,9 +195,9 @@ class TaskController extends RestController implements ClassResourceInterface
         );
 
         $manager = $this->getTaskManager();
-        $manager->update($task);
+        $task = $manager->update($task);
 
-        $this->getEntityManager()->flush();
+        $this->getEntityManager()->flush($task);
 
         return $this->handleView($this->view($task));
     }

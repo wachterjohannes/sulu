@@ -70,6 +70,22 @@ interface TaskInterface extends AuditableInterface
     public function getEntityId();
 
     /**
+     * Returns taskId.
+     *
+     * @return string
+     */
+    public function getTaskId();
+
+    /**
+     * Set taskId.
+     *
+     * @param string $taskId
+     *
+     * @return $this
+     */
+    public function setTaskId($taskId);
+
+    /**
      * Returns creator full-name.
      *
      * @return string

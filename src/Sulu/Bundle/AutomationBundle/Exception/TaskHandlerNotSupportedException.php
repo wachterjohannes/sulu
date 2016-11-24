@@ -15,7 +15,7 @@ use Sulu\Bundle\AutomationBundle\Tasks\Model\TaskInterface;
 use Task\Handler\TaskHandlerInterface;
 
 /**
- * Will be thrown if task-hand was not supported.
+ * Will be thrown if task-handler is not supported.
  */
 class TaskHandlerNotSupportedException extends \Exception
 {
@@ -35,7 +35,7 @@ class TaskHandlerNotSupportedException extends \Exception
      */
     public function __construct(TaskHandlerInterface $taskHandler, TaskInterface $task)
     {
-        parent::__construct(sprintf("Task-Handler '%s' is not supported.", get_class($taskHandler)));
+        parent::__construct(sprintf('Task-Handler "%s" is not supported.', get_class($taskHandler)));
 
         $this->taskHandler = $taskHandler;
         $this->task = $task;
