@@ -12,8 +12,8 @@
             <orm:entity-name>%sulu.model.task.class%</orm:entity-name>
         </property>
 
-        <property name="taskName" list:translation="sulu_automation.task.name" display="always">
-            <orm:field-name>taskName</orm:field-name>
+        <property name="handlerClass" list:translation="sulu_automation.task.name" display="always">
+            <orm:field-name>handlerClass</orm:field-name>
             <orm:entity-name>%sulu.model.task.class%</orm:entity-name>
         </property>
 

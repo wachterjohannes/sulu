@@ -29,7 +29,7 @@ class Task implements TaskInterface
     /**
      * @var string
      */
-    private $taskName;
+    private $handlerClass;
 
     /**
      * @var \DateTime
@@ -72,21 +72,21 @@ class Task implements TaskInterface
     /**
      * {@inheritdoc}
      */
-    public function getTaskName()
+    public function getHandlerClass()
     {
-        return $this->taskName;
+        return $this->handlerClass;
     }
 
     /**
      * Set task.
      *
-     * @param string $taskName
+     * @param string $handlerClass
      *
      * @return $this
      */
-    public function setTaskName($taskName)
+    public function setHandlerClass($handlerClass)
     {
-        $this->taskName = $taskName;
+        $this->handlerClass = $handlerClass;
 
         return $this;
     }

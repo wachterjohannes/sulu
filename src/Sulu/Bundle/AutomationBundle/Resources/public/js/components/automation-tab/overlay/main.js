@@ -27,7 +27,7 @@ define(['services/suluautomation/task-manager', 'text!./form.html'], function(ma
 
             translations: {
                 task: 'sulu_automation.task',
-                taskName: 'sulu_automation.task.name',
+                handlerClass: 'sulu_automation.task.name',
                 time: 'sulu_automation.task.time',
                 date: 'sulu_automation.task.date',
                 choose: 'sulu_automation.task.choose'
@@ -92,7 +92,7 @@ define(['services/suluautomation/task-manager', 'text!./form.html'], function(ma
             var date = !!data.schedule ? new Date(data.schedule) : null;
 
             return {
-                taskName: data.taskName,
+                handlerClass: data.handlerClass,
                 date: !!date ? Globalize.format(date, "yyyy'-'MM'-'dd") : '',
                 time: !!date ? Globalize.format(date, "HH':'mm':'ss") : ''
             }
@@ -101,7 +101,7 @@ define(['services/suluautomation/task-manager', 'text!./form.html'], function(ma
         encodeData: function(data) {
             return {
                 id: this.options.id,
-                taskName: data.taskName,
+                handlerClass: data.handlerClass,
                 schedule: Globalize.format(new Date(data.date + ' ' + data.time), "yyyy'-'MM'-'dd'T'HH':'mm':'ssz'00'")
             }
         },

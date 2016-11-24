@@ -45,7 +45,7 @@ class TaskControllerTest extends SuluTestCase
             $this->assertContains(
                 [
                     'id' => $postData[$i]['id'],
-                    'taskName' => $postData[$i]['taskName'],
+                    'handlerClass' => $postData[$i]['handlerClass'],
                     'schedule' => $postData[$i]['schedule'],
                 ],
                 $embedded
@@ -100,7 +100,7 @@ class TaskControllerTest extends SuluTestCase
             $this->assertContains(
                 [
                     'id' => $items[$i]['id'],
-                    'taskName' => $items[$i]['taskName'],
+                    'handlerClass' => $items[$i]['handlerClass'],
                     'schedule' => $items[$i]['schedule'],
                 ],
                 $embedded
@@ -129,7 +129,7 @@ class TaskControllerTest extends SuluTestCase
     }
 
     public function testPost(
-        $taskName = 'sulu_content.publish',
+        $handlerClass = 'TestHandler',
         $schedule = '+1 day',
         $entityClass = 'ThisClass',
         $entityId = 1,
@@ -143,7 +143,7 @@ class TaskControllerTest extends SuluTestCase
             'POST',
             '/api/tasks',
             [
-                'taskName' => $taskName,
+                'handlerClass' => $handlerClass,
                 'schedule' => $scheduleDate,
                 'entityClass' => $entityClass,
                 'entityId' => $entityId,
@@ -155,14 +155,14 @@ class TaskControllerTest extends SuluTestCase
         $responseData = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertArrayHasKey('id', $responseData);
-        $this->assertEquals($taskName, $responseData['taskName']);
+        $this->assertEquals($handlerClass, $responseData['handlerClass']);
         $this->assertEquals($scheduleDate, $responseData['schedule']);
         $this->assertEquals($locale, $responseData['locale']);
 
         return $responseData;
     }
 
-    public function testPut($taskName = 'sulu_content.unpublish', $schedule = '+2 day')
+    public function testPut($handlerClass = 'TestHandler', $schedule = '+2 day')
     {
         $postData = $this->testPost();
 
@@ -173,14 +173,14 @@ class TaskControllerTest extends SuluTestCase
         $client->request(
             'PUT',
             '/api/tasks/' . $postData['id'],
-            ['taskName' => $taskName, 'schedule' => $scheduleDate]
+            ['handlerClass' => $handlerClass, 'schedule' => $scheduleDate]
         );
         $this->assertHttpStatusCode(200, $client->getResponse());
 
         $responseData = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertEquals($postData['id'], $responseData['id']);
-        $this->assertEquals($taskName, $responseData['taskName']);
+        $this->assertEquals($handlerClass, $responseData['handlerClass']);
         $this->assertEquals($scheduleDate, $responseData['schedule']);
     }
 
@@ -195,7 +195,7 @@ class TaskControllerTest extends SuluTestCase
         $responseData = json_decode($client->getResponse()->getContent(), true);
 
         $this->assertEquals($postData['id'], $responseData['id']);
-        $this->assertEquals($postData['taskName'], $responseData['taskName']);
+        $this->assertEquals($postData['handlerClass'], $responseData['handlerClass']);
         $this->assertEquals($postData['schedule'], $responseData['schedule']);
         $this->assertEquals($postData['locale'], $responseData['locale']);
     }
