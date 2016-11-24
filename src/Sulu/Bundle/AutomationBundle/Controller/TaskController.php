@@ -17,7 +17,9 @@ use JMS\Serializer\DeserializationContext;
 use Sulu\Bundle\AutomationBundle\Entity\Task;
 use Sulu\Bundle\AutomationBundle\Exception\TaskNotFoundException;
 use Sulu\Bundle\AutomationBundle\Tasks\Manager\TaskManagerInterface;
+use Sulu\Component\Rest\ListBuilder\Doctrine\FieldDescriptor\DoctrineFieldDescriptor;
 use Sulu\Component\Rest\ListBuilder\FieldDescriptorInterface;
+use Sulu\Component\Rest\ListBuilder\ListBuilderInterface;
 use Sulu\Component\Rest\ListBuilder\ListRepresentation;
 use Sulu\Component\Rest\RestController;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,41 +49,11 @@ class TaskController extends RestController implements ClassResourceInterface
      */
     public function cgetAction(Request $request)
     {
-        $restHelper = $this->get('sulu_core.doctrine_rest_helper');
+        $fieldDescriptors = $this->getFieldDescriptors(DoctrineFieldDescriptor::class);
         $factory = $this->get('sulu_core.doctrine_list_builder_factory');
-        $fieldDescriptors = $this->getFieldDescriptors();
 
-        $listBuilder = $factory->create(Task::class);
-        $restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
-
-        if ($entityClass = $request->get('entity-class')) {
-            $listBuilder->where($fieldDescriptors['entityClass'], $entityClass);
-        }
-        if ($entityId = $request->get('entity-id')) {
-            $listBuilder->where($fieldDescriptors['entityId'], $entityId);
-        }
-        if ($locale = $request->get('locale')) {
-            $listBuilder->where($fieldDescriptors['locale'], $locale);
-        }
-
-        $ids = null;
-        if ($request->get('ids') !== null) {
-            $ids = array_filter(explode(',', $request->get('ids')));
-            $listBuilder->in($fieldDescriptors['id'], $ids);
-        }
-
-        $result = $listBuilder->execute();
-
-        if ($ids) {
-            $sorted = [];
-            foreach ($result as $item) {
-                $sorted[array_search($item['id'], $ids)] = $item;
-            }
-
-            ksort($sorted);
-
-            $result = array_values($sorted);
-        }
+        $listBuilder = $this->prepareListBuilder($fieldDescriptors, $request, $factory->create(Task::class));
+        $result = $this->executeListBuilder($fieldDescriptors, $request, $listBuilder);
 
         return $this->handleView(
             $this->view(
@@ -96,6 +68,63 @@ class TaskController extends RestController implements ClassResourceInterface
                 )
             )
         );
+    }
+
+    /**
+     * Prepares list-builder.
+     *
+     * @param FieldDescriptorInterface[] $fieldDescriptors
+     * @param Request $request
+     * @param ListBuilderInterface $listBuilder
+     *
+     * @return ListBuilderInterface
+     */
+    private function prepareListBuilder(array $fieldDescriptors, Request $request, ListBuilderInterface $listBuilder)
+    {
+        $restHelper = $this->get('sulu_core.doctrine_rest_helper');
+        $restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
+
+        if ($entityClass = $request->get('entity-class')) {
+            $listBuilder->where($fieldDescriptors['entityClass'], $entityClass);
+        }
+
+        if ($entityId = $request->get('entity-id')) {
+            $listBuilder->where($fieldDescriptors['entityId'], $entityId);
+        }
+
+        if ($locale = $request->get('locale')) {
+            $listBuilder->where($fieldDescriptors['locale'], $locale);
+        }
+
+        return $listBuilder;
+    }
+
+    /**
+     * Executes given list-builder and returns result.
+     *
+     * @param FieldDescriptorInterface[] $fieldDescriptors
+     * @param Request $request
+     * @param ListBuilderInterface $listBuilder
+     *
+     * @return array
+     */
+    private function executeListBuilder(array $fieldDescriptors, Request $request, ListBuilderInterface $listBuilder)
+    {
+        if (null === ($idsParameter = $request->get('ids'))) {
+            return $listBuilder->execute();
+        }
+
+        $ids = array_filter(explode(',', $request->get('ids')));
+        $listBuilder->in($fieldDescriptors['id'], $ids);
+
+        $sorted = [];
+        foreach ($listBuilder->execute() as $item) {
+            $sorted[array_search($item['id'], $ids)] = $item;
+        }
+
+        ksort($sorted);
+
+        return array_values($sorted);
     }
 
     /**
@@ -203,11 +232,14 @@ class TaskController extends RestController implements ClassResourceInterface
     /**
      * Returns field-descriptors for task-entity.
      *
+     * @param string $type
+     *
      * @return FieldDescriptorInterface[]
      */
-    private function getFieldDescriptors()
+    private function getFieldDescriptors($type = null)
     {
-        return $this->get('sulu_core.list_builder.field_descriptor_factory')->getFieldDescriptorForClass(Task::class);
+        return $this->get('sulu_core.list_builder.field_descriptor_factory')
+            ->getFieldDescriptorForClass(Task::class, [], $type);
     }
 
     /**
