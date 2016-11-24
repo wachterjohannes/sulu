@@ -15,6 +15,14 @@
             <argument type="service" id="event_dispatcher"/>
         </service>
 
+        <service id="sulu_automation.serializer.task"
+                 class="Sulu\Bundle\AutomationBundle\Serializer\TaskSerializerSubscriber">
+            <argument type="service" id="task.handler.factory"/>
+
+            <tag name="sulu.context" context="admin"/>
+            <tag name="jms_serializer.event_subscriber"/>
+        </service>
+
         <!-- FIXME hack to enable doctrine object constructor -->
         <!--
           could be fixed in serializer by changing JMS\SerializerBundle\DependencyInjection\Compiler\DoctrinePass:49

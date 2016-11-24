@@ -4,7 +4,8 @@
             <label for="task-handler-class" class="required m-bottom-10"><%= translations.handlerClass %></label>
             <div id="task-handler-class"
                  data-aura-component="select@husky"
-                 data-aura-data='[{"id":"sulu_content.publish","title":"Publish"},{"id":"sulu_content.unpublish","title":"Unpublish"}]'
+                 data-aura-url="/admin/automation/task-handler?entity-class=<%= entityClass %>"
+                 data-aura-result-key="handlers"
                  data-aura-multiple-select="false"
                  data-aura-default-label="<%= translations.choose %>"
                  data-aura-value-name="title"

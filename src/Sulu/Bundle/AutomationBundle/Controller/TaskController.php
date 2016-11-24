@@ -16,6 +16,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use JMS\Serializer\DeserializationContext;
 use Sulu\Bundle\AutomationBundle\Entity\Task;
 use Sulu\Bundle\AutomationBundle\Exception\TaskNotFoundException;
+use Sulu\Bundle\AutomationBundle\TaskHandler\AutomationTaskHandlerInterface;
 use Sulu\Bundle\AutomationBundle\Tasks\Manager\TaskManagerInterface;
 use Sulu\Component\Rest\ListBuilder\Doctrine\FieldDescriptor\DoctrineFieldDescriptor;
 use Sulu\Component\Rest\ListBuilder\FieldDescriptorInterface;
@@ -55,6 +56,15 @@ class TaskController extends RestController implements ClassResourceInterface
         $listBuilder = $this->prepareListBuilder($fieldDescriptors, $request, $factory->create(Task::class));
         $result = $this->executeListBuilder($fieldDescriptors, $request, $listBuilder);
 
+        $handlerFactory = $this->get('task.handler.factory');
+        for ($i = 0; $i < count($result); ++$i) {
+            $handler = $handlerFactory->create($result[$i]['handlerClass']);
+
+            if ($handler instanceof AutomationTaskHandlerInterface) {
+                $result[$i]['taskName'] = $handler->getConfiguration()->getTitle();
+            }
+        }
+
         return $this->handleView(
             $this->view(
                 new ListRepresentation(
@@ -83,6 +93,7 @@ class TaskController extends RestController implements ClassResourceInterface
     {
         $restHelper = $this->get('sulu_core.doctrine_rest_helper');
         $restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
+        $listBuilder->addSelectField($fieldDescriptors['handlerClass']);
 
         if ($entityClass = $request->get('entity-class')) {
             $listBuilder->where($fieldDescriptors['entityClass'], $entityClass);

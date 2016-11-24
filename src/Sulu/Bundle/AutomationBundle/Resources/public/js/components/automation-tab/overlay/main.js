@@ -16,6 +16,7 @@ define(['services/suluautomation/task-manager', 'text!./form.html'], function(ma
         defaults: {
             options: {
                 id: null,
+                entityClass: null,
                 saveCallback: function(data) {
 
                 }
@@ -36,7 +37,10 @@ define(['services/suluautomation/task-manager', 'text!./form.html'], function(ma
 
         initialize: function() {
             this.$container = $('<div/>');
-            this.$formContainer = $(this.templates.form({translations: this.translations}));
+            this.$formContainer = $(this.templates.form({
+                translations: this.translations,
+                entityClass: this.options.entityClass
+            }));
             this.$el.append(this.$container);
 
             this.sandbox.start(
