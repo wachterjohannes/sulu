@@ -56,6 +56,7 @@ define([
 
             this.startTasksComponents();
             this.bindCustomEvents();
+            this.bindDomEvents();
         },
 
         bindCustomEvents: function() {
@@ -68,7 +69,7 @@ define([
             }.bind(this));
 
             this.sandbox.on('sulu.toolbar.delete', function() {
-                this.sandbox.emit('husky.datagrid.tasks.items.get-selected', this.deleteTasks.bind(this));
+                this.sandbox.emit('husky.datagrid.tasks.items.get-selected', this.deleteTasksDialog.bind(this));
             }.bind(this));
         },
 
@@ -135,6 +136,17 @@ define([
                         }
                     }
                 ]
+            );
+        },
+
+        deleteTasksDialog: function(ids) {
+            this.sandbox.sulu.showDeleteDialog(function(wasConfirmed) {
+                    if (!wasConfirmed) {
+                        return;
+                    }
+
+                    this.deleteTasks(ids);
+                }.bind(this)
             );
         },
 
