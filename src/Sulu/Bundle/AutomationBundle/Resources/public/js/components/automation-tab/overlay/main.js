@@ -78,17 +78,9 @@ define(['services/suluautomation/task-manager', 'text!./form.html'], function(ma
             this.sandbox.once('husky.overlay.task-overlay.opened', function() {
                 this.sandbox.form.create(this.$formContainer).initialized.then(function() {
                     this.sandbox.form.setData(this.$formContainer, this.decodeData(this.data)).then(function() {
-                        this.sandbox.start(this.$formContainer).then(function() {
-                            this.bindDomEvents();
-                        }.bind(this));
+                        this.sandbox.start(this.$formContainer);
                     }.bind(this));
                 }.bind(this));
-            }.bind(this));
-        },
-
-        bindDomEvents: function() {
-            this.sandbox.dom.on('#task-date-container', 'change', function(e) {
-                $(e.currentTarget).data('element').validate();
             }.bind(this));
         },
 
