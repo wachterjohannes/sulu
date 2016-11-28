@@ -108,9 +108,15 @@ define(['services/suluautomation/task-manager', 'text!./form.html'], function(ma
             }
 
             var data = this.encodeData(this.sandbox.form.getData(this.$formContainer));
-            this.options.saveCallback(data);
 
-            this.sandbox.stop();
+            this.sandbox.emit('husky.overlay.task-overlay.show-loader');
+            this.options.saveCallback(data).then(function() {
+                this.sandbox.stop();
+            }.bind(this)).fail(function() {
+                this.sandbox.emit('husky.overlay.task-overlay.hide-loader');
+            }.bind(this));
+
+            return false;
         },
 
         loadComponentData: function() {
