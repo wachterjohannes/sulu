@@ -57,7 +57,7 @@ class TaskController extends RestController implements ClassResourceInterface
         $result = $this->executeListBuilder($fieldDescriptors, $request, $listBuilder);
 
         $handlerFactory = $this->get('task.handler.factory');
-        for ($i = 0; $i < count($result); ++ $i) {
+        for ($i = 0; $i < count($result); ++$i) {
             $handler = $handlerFactory->create($result[$i]['handlerClass']);
 
             if ($handler instanceof AutomationTaskHandlerInterface) {
@@ -249,11 +249,8 @@ class TaskController extends RestController implements ClassResourceInterface
      */
     private function getFieldDescriptors($type = null)
     {
-        return $this->get('sulu_core.list_builder.field_descriptor_factory')->getFieldDescriptorForClass(
-                Task::class,
-                [],
-                $type
-            );
+        return $this->get('sulu_core.list_builder.field_descriptor_factory')
+            ->getFieldDescriptorForClass(Task::class, [], $type);
     }
 
     /**
