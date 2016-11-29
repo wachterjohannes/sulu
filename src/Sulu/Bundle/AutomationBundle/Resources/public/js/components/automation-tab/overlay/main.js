@@ -45,10 +45,12 @@ define(['services/suluautomation/task-manager', 'text!./form.html'], function(ma
             this.$el.append(this.$container);
 
             var buttons = [];
-            buttons.push({
-                type: 'ok',
-                align: 'right'
-            });
+            if (!!this.options.saveCallback) {
+                buttons.push({
+                    type: 'ok',
+                    align: 'right'
+                });
+            }
 
             if (!!this.options.removeCallback) {
                 buttons.push({
