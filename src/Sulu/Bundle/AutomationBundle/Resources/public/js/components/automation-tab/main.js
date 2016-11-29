@@ -161,6 +161,9 @@ define([
                             el: $container,
                             entityClass: this.options.entityClass,
                             saveCallback: this.saveTask.bind(this),
+                            removeCallback: function() {
+                                return this.deleteTask(id);
+                            }.bind(this),
                             id: id
                         }
                     }
@@ -198,10 +201,16 @@ define([
         },
 
         deleteTasks: function(ids) {
-            manager.deleteItems(ids).then(function() {
+            return manager.deleteItems(ids).then(function() {
                 _.each(ids, function(id) {
                     this.sandbox.emit('husky.datagrid.tasks.record.remove', id);
                 }.bind(this));
+            }.bind(this));
+        },
+
+        deleteTask: function(id) {
+            return manager.deleteItem(id).then(function() {
+                this.sandbox.emit('husky.datagrid.tasks.record.remove', id);
             }.bind(this));
         },
 
