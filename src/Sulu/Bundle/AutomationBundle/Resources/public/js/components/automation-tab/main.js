@@ -125,6 +125,12 @@ define([
                                 status: function(content) {
                                     var iconString = 'fa-question';
                                     switch (content) {
+                                        case 'planned':
+                                            iconString = 'fa-clock-o';
+                                            break;
+                                        case 'started':
+                                            iconString = 'fa-play';
+                                            break;
                                         case 'completed':
                                             iconString = 'fa-check-circle';
                                             break;
