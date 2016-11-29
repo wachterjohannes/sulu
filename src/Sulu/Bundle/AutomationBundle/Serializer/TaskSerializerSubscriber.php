@@ -86,8 +86,7 @@ class TaskSerializerSubscriber implements EventSubscriberInterface
             $event->getVisitor()->addData('taskName', $handler->getConfiguration()->getTitle());
         }
 
-        $task = $this->taskRepository->findByUuid($object->getTaskId());
-        $executions = $this->taskExecutionRepository->findByTask($task);
+        $executions = $this->taskExecutionRepository->findByTaskUuid($object->getTaskId());
         if (0 < count($executions)) {
             $event->getVisitor()->addData('status', $executions[0]->getStatus());
         }
