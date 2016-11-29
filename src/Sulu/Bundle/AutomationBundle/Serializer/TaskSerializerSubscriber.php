@@ -18,7 +18,6 @@ use Sulu\Bundle\AutomationBundle\TaskHandler\AutomationTaskHandlerInterface;
 use Sulu\Bundle\AutomationBundle\Tasks\Model\TaskInterface;
 use Task\Handler\TaskHandlerFactoryInterface;
 use Task\Storage\TaskExecutionRepositoryInterface;
-use Task\Storage\TaskRepositoryInterface;
 
 /**
  * Extend serialization of tasks.
@@ -31,27 +30,19 @@ class TaskSerializerSubscriber implements EventSubscriberInterface
     private $handlerFactory;
 
     /**
-     * @var TaskRepositoryInterface
-     */
-    private $taskRepository;
-
-    /**
      * @var TaskExecutionRepositoryInterface
      */
     private $taskExecutionRepository;
 
     /**
      * @param TaskHandlerFactoryInterface $handlerFactory
-     * @param TaskRepositoryInterface $taskRepository
      * @param TaskExecutionRepositoryInterface $taskExecutionRepository
      */
     public function __construct(
         TaskHandlerFactoryInterface $handlerFactory,
-        TaskRepositoryInterface $taskRepository,
         TaskExecutionRepositoryInterface $taskExecutionRepository
     ) {
         $this->handlerFactory = $handlerFactory;
-        $this->taskRepository = $taskRepository;
         $this->taskExecutionRepository = $taskExecutionRepository;
     }
 

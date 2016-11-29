@@ -33,7 +33,6 @@
         <service id="sulu_automation.serializer.task"
                  class="Sulu\Bundle\AutomationBundle\Serializer\TaskSerializerSubscriber">
             <argument type="service" id="task.handler.factory"/>
-            <argument type="service" id="task.repository.task"/>
             <argument type="service" id="task.repository.task_execution"/>
 
             <tag name="sulu.context" context="admin"/>
