@@ -13,13 +13,13 @@ define([
     'services/suluautomation/task-manager',
     'text!./skeleton.html',
     'text!/admin/api/tasks/fields'
-], function(_, Config, manager, skeletonTemplate, fieldsResponse) {
+], function(_, config, manager, skeletonTemplate, fieldsResponse) {
 
     'use strict';
 
     var fields = JSON.parse(fieldsResponse),
         historyFields = JSON.parse(fieldsResponse),
-        securityContext = Config.get('sulu_security.contexts')['sulu.automation.tasks'];
+        securityContext = config.get('sulu_security.contexts')['sulu.automation.tasks'];
 
     for (var i = 0, length = historyFields.length; i < length; i++) {
         if (historyFields[i].name === 'status') {
