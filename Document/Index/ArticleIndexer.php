@@ -275,7 +275,7 @@ class ArticleIndexer implements IndexerInterface
     {
         $pages = [];
         foreach ($document->getChildren() as $child) {
-            $pages[] = $page = new ArticlePageViewObject();
+            $pages[] = $page = $this->documentFactory->create('article_page');
             $page->uuid = $child->getUuid();
             $page->pageNumber = $child->getPageNumber();
             $page->title = $child->getPageTitle();
