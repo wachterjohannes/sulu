@@ -1,5 +1,7 @@
 @import '../Toolbar/toolbar.scss';
 
+$sidebarShrinkAnimationDuration: 700ms;
+
 .root {
     width: calc(100vw + 260px);
     display: inline-flex;
@@ -20,8 +22,31 @@
 }
 
 .main {
-    height: calc(100vh - $toolbarHeight);
+    height: 100vh;
     overflow-y: auto;
+    display: flex;
+}
+
+.content {
+    flex: 2;
+    overflow: scroll;
+}
+
+.sidebar {
+    &.small {
+        flex: 1;
+        transition: flex $sidebarShrinkAnimationDuration;
+    }
+
+    &.middle {
+        flex: 2;
+        transition: flex $sidebarShrinkAnimationDuration;
+    }
+
+    &.large {
+        flex: 3;
+        transition: flex $sidebarShrinkAnimationDuration;
+    }
 }
 
 .header {

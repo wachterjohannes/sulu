@@ -17,6 +17,13 @@ export default class ToolbarStore {
         return !!this.config.disableAll;
     }
 
+    @computed get empty(): boolean {
+        return !this.hasBackButtonConfig()
+            && !this.hasIconsConfig()
+            && !this.hasItemsConfig()
+            && !this.hasLocaleConfig();
+    }
+
     hasBackButtonConfig(): boolean {
         return !!this.config.backButton;
     }

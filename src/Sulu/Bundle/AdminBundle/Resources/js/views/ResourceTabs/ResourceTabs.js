@@ -8,9 +8,10 @@ import type {ViewProps} from '../../containers/ViewRenderer';
 import {translate} from '../../utils/Translator';
 import ResourceStore from '../../stores/ResourceStore';
 import resourceTabsStyle from './resourceTabs.scss';
+import withSidebar from '../../containers/Sidebar/withSidebar';
 
 @observer
-export default class ResourceTabs extends React.Component<ViewProps> {
+class ResourceTabs extends React.Component<ViewProps> {
     resourceStore: ResourceStore;
 
     componentWillMount() {
@@ -77,3 +78,9 @@ export default class ResourceTabs extends React.Component<ViewProps> {
         );
     }
 }
+
+export default withSidebar(ResourceTabs, function() {
+    return {
+        view: 'preview',
+    };
+});

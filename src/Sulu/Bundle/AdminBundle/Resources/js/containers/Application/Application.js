@@ -5,6 +5,7 @@ import {action, observable} from 'mobx';
 import classNames from 'classnames';
 import React from 'react';
 import Router from '../../services/Router';
+import Sidebar, {sidebarStore} from '../Sidebar';
 import Toolbar from '../Toolbar';
 import ViewRenderer from '../ViewRenderer';
 import {Navigation, Backdrop} from '../../components';
@@ -93,6 +94,12 @@ export default class Application extends React.Component<Props> {
 
     renderNavigation() {
         const {router} = this.props;
+        const sidebarClass = classNames(
+            applicationStyles.sidebar,
+            {
+                [applicationStyles[sidebarStore.size]]: sidebarStore.size,
+            }
+        );
 
         return (
             <Navigation
@@ -164,6 +171,9 @@ export default class Application extends React.Component<Props> {
                             />
                         }
                     </main>
+                    <Sidebar
+                        className={sidebarClass}
+                    />
                 </div>
             </div>
         );
