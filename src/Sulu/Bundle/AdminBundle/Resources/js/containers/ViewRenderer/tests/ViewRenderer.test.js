@@ -279,7 +279,7 @@ test('Render view with route that has more than one rerenderAttributes', () => {
 
 test('Render view and not clear the sidebarstore when component has sidebar', () => {
     const Component = class Component extends React.Component {
-        static hasSidebar: boolean = true;
+        static hasSidebar = true;
 
         render() {
             return <h1>{this.props.title}</h1>;

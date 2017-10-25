@@ -2,10 +2,10 @@
 import React from 'react';
 import type {Element} from 'react';
 import {observer} from 'mobx-react';
+import {sidebarStore} from '../Sidebar';
 import Router from '../../services/Router';
 import type {Route} from '../../services/Router';
 import viewRegistry from './registries/ViewRegistry';
-import {sidebarStore} from '../Sidebar';
 
 type Props = {
     router: Router,
@@ -35,7 +35,7 @@ export default class ViewRenderer extends React.Component<Props> {
         return rerenderAttributeValues.join('__');
     };
 
-    renderView(route: Route, child: Element<*> | null = null, , hasSidebar: boolean = false) {
+    renderView(route: Route, child: Element<*> | null = null, hasSidebar: boolean = false) {
         const {router} = this.props;
         const {view} = route;
 

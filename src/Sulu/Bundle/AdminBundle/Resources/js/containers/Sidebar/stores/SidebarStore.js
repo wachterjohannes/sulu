@@ -4,11 +4,11 @@ import type {SidebarConfig, Sizes} from '../types';
 import {DEFAULT_SIZE, SIZES} from '../types';
 
 class SidebarStore {
-    @observable view: string;
+    @observable view: ?string;
     @observable props: Object;
     sizes: Array<string>;
 
-    @observable size: string;
+    @observable size: ?string;
 
     constructor() {
         this.clearConfig();
@@ -18,10 +18,10 @@ class SidebarStore {
         this.view = config.view;
         this.props = config.props || {};
         this.sizes = config.sizes || SIZES;
-        this.defaultSize = config.defaultSize || DEFAULT_SIZE;
 
+        let defaultSize = config.defaultSize || DEFAULT_SIZE;
         if (!this.size || -1 === this.sizes.indexOf(this.size)) {
-            this.size = this.defaultSize;
+            this.size = defaultSize;
         }
     }
 
