@@ -47,3 +47,6 @@ phpunit.xml
 # Jackrabbit
 jackrabbit-standalone*
 jackrabbit/*
+
+# Styleguide
+/styleguide
