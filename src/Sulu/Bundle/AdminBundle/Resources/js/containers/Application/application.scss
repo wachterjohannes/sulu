@@ -38,7 +38,7 @@ $sidebarShrinkAnimationDuration: 700ms;
         transition: flex $sidebarShrinkAnimationDuration;
     }
 
-    &.middle {
+    &.medium {
         flex: 2;
         transition: flex $sidebarShrinkAnimationDuration;
     }

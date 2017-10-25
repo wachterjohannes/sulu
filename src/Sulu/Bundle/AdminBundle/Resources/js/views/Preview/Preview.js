@@ -9,13 +9,11 @@ type Props = {};
 @observer
 export default class Preview extends React.PureComponent<Props> {
     handleToggleSidebarClick = () => {
-        if (sidebarStore.size === 'small') {
-            return sidebarStore.setSize('middle');
-        } else if (sidebarStore.size === 'middle') {
+        if (sidebarStore.size === 'medium') {
             return sidebarStore.setSize('large');
         }
 
-        sidebarStore.setSize('small');
+        sidebarStore.setSize('medium');
     };
 
     render() {

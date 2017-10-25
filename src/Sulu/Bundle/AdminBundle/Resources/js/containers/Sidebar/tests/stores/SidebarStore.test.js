@@ -12,7 +12,6 @@ test('Set sidebar config and let mobx react', () => {
         props: {
             id: 1,
         },
-        size: 'small',
     };
 
     sidebarStore.setConfig(config);
@@ -20,7 +19,7 @@ test('Set sidebar config and let mobx react', () => {
     expect(sidebarStore.enabled).toEqual(true);
     expect(sidebarStore.view).toEqual(config.view);
     expect(sidebarStore.props).toEqual(config.props);
-    expect(sidebarStore.size).toEqual(config.size);
+    expect(sidebarStore.size).toEqual('medium');
 });
 
 test('Default size of sidebar should be small', () => {
@@ -33,7 +32,7 @@ test('Default size of sidebar should be small', () => {
 });
 
 test('Set sidebar size', () => {
-    expect(sidebarStore.size).toEqual(DEFAULT_SIZE);
+    expect(sidebarStore.size).toEqual(null);
     sidebarStore.setSize('large');
     expect(sidebarStore.size).toEqual('large');
 });
@@ -47,4 +46,40 @@ test('Clear sidebar config', () => {
 
     sidebarStore.clearConfig();
     expect(sidebarStore.view).toEqual(undefined);
+});
+
+test('Use default size if current size not supported', () => {
+    sidebarStore.size = 'large';
+
+    sidebarStore.setConfig({
+        view: 'preview',
+        sizes: ['small'],
+        defaultSize: 'small',
+    });
+
+    expect(sidebarStore.size).toEqual('small');
+});
+
+test('Use default size if current size not set', () => {
+    sidebarStore.clearConfig();
+
+    sidebarStore.setConfig({
+        view: 'preview',
+        sizes: ['small'],
+        defaultSize: 'small',
+    });
+
+    expect(sidebarStore.size).toEqual('small');
+});
+
+test('Throw error when size is not supported', () => {
+    sidebarStore.setConfig({
+        view: 'preview',
+        sizes: ['small'],
+        defaultSize: 'small',
+    });
+
+    expect(() => {
+        sidebarStore.setSize('medium');
+    }).toThrow(new Error('Size "medium" is not supported by view. Supported: ["small"]'));
 });

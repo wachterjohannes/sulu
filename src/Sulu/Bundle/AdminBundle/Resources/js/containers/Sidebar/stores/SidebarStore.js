@@ -1,10 +1,13 @@
 // @flow
 import {action, computed, observable} from 'mobx';
 import type {SidebarConfig, Sizes} from '../types';
-import {DEFAULT_SIZE} from '../types';
+import {DEFAULT_SIZE, SIZES} from '../types';
 
 class SidebarStore {
-    @observable config: SidebarConfig;
+    @observable view: string;
+    @observable props: Object;
+    sizes: Array<string>;
+
     @observable size: string;
 
     constructor() {
@@ -12,27 +15,32 @@ class SidebarStore {
     }
 
     @action setConfig(config: SidebarConfig) {
-        this.config = config;
-        this.size = config.size || DEFAULT_SIZE;
+        this.view = config.view;
+        this.props = config.props || {};
+        this.sizes = config.sizes || SIZES;
+        this.defaultSize = config.defaultSize || DEFAULT_SIZE;
+
+        if (!this.size || -1 === this.sizes.indexOf(this.size)) {
+            this.size = this.defaultSize;
+        }
     }
 
     @action clearConfig() {
         this.setConfig({});
+        this.size = null;
     }
 
     @computed get enabled(): boolean {
-        return !!this.config.view;
-    }
-
-    @computed get view(): ?string {
-        return this.config.view;
-    }
-
-    @computed get props(): ?Object {
-        return this.config.props;
+        return !!this.view;
     }
 
     @action setSize(size: Sizes) {
+        if (-1 === this.sizes.indexOf(size)) {
+            throw new Error(
+                'Size "' + size + '" is not supported by view. Supported: ["' + this.sizes.join('", "') + '"]'
+            );
+        }
+
         this.size = size;
     }
 }

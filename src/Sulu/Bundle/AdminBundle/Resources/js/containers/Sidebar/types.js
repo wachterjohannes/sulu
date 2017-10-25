@@ -5,14 +5,16 @@ export type SidebarViewOptions = {};
 
 export type SidebarView = ComponentType<SidebarViewOptions>;
 
-export type Sizes = 'small' | 'middle' | 'large';
+export type Sizes = 'small' | 'medium' | 'large';
 
 export type SidebarConfig = {
     view?: string,
     props?: Object,
-    size?: Sizes,
+    sizes?: Array<Sizes>,
+    defaultSize?: Sizes,
 };
 
-const DEFAULT_SIZE = 'middle';
+const DEFAULT_SIZE = 'medium';
+const SIZES = ['small', 'medium', 'large'];
 
-export {DEFAULT_SIZE};
+export {DEFAULT_SIZE, SIZES};

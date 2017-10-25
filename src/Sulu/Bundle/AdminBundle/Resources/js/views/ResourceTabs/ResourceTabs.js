@@ -82,5 +82,6 @@ class ResourceTabs extends React.Component<ViewProps> {
 export default withSidebar(ResourceTabs, function() {
     return {
         view: 'preview',
+        sizes: ['large', 'medium'],
     };
 });
