@@ -10,6 +10,8 @@ export default function withSidebar(
     sidebar: () => SidebarConfig
 ) {
     const WithSidebarComponent = class extends Component {
+        static hasSidebar = true;
+
         sidebarDisposer: Function;
 
         componentWillMount() {
@@ -31,7 +33,6 @@ export default function withSidebar(
                 super.componentWillUnmount();
             }
 
-            sidebarStore.clearConfig();
             this.sidebarDisposer();
         }
     };

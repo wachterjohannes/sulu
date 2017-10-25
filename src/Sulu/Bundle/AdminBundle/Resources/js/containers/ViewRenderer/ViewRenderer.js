@@ -5,6 +5,7 @@ import {observer} from 'mobx-react';
 import Router from '../../services/Router';
 import type {Route} from '../../services/Router';
 import viewRegistry from './registries/ViewRegistry';
+import {sidebarStore} from '../Sidebar';
 
 type Props = {
     router: Router,
@@ -34,7 +35,7 @@ export default class ViewRenderer extends React.Component<Props> {
         return rerenderAttributeValues.join('__');
     };
 
-    renderView(route: Route, child: Element<*> | null = null) {
+    renderView(route: Route, child: Element<*> | null = null, , hasSidebar: boolean = false) {
         const {router} = this.props;
         const {view} = route;
 
@@ -43,6 +44,9 @@ export default class ViewRenderer extends React.Component<Props> {
             throw new Error('View "' + view + '" has not been found');
         }
 
+        // if any view has sidebar - the sidebar will be visible
+        hasSidebar = View.hasSidebar ? true : hasSidebar;
+
         const element = (
             <View router={router} route={route} key={this.getKey(route)}>
                 {(props) => child ? React.cloneElement(child, props) : null}
@@ -50,10 +54,14 @@ export default class ViewRenderer extends React.Component<Props> {
         );
 
         if (!route.parent) {
+            if (!hasSidebar) {
+                sidebarStore.clearConfig();
+            }
+
             return element;
         }
 
-        return this.renderView(route.parent, element);
+        return this.renderView(route.parent, element, hasSidebar);
     }
 
     render() {
