@@ -7,8 +7,8 @@ import Loader from '../../components/Loader';
 import type {ViewProps} from '../../containers/ViewRenderer';
 import {translate} from '../../utils/Translator';
 import ResourceStore from '../../stores/ResourceStore';
+import {withSidebar} from '../../containers/Sidebar';
 import resourceTabsStyle from './resourceTabs.scss';
-import withSidebar from '../../containers/Sidebar/withSidebar';
 
 @observer
 class ResourceTabs extends React.Component<ViewProps> {

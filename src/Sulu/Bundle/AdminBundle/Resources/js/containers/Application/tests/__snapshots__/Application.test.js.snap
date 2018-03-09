@@ -172,9 +172,13 @@ exports[`Application should not fail if current route does not exist 1`] = `
         />
       </nav>
     </header>
-    <main
-      class="main"
-    />
+    <div
+      class=""
+    >
+      <main
+        class="main"
+      />
+    </div>
   </div>
 </div>
 `;
@@ -351,18 +355,22 @@ exports[`Application should render based on current route 1`] = `
         />
       </nav>
     </header>
-    <main
-      class="main"
+    <div
+      class=""
     >
-      <div>
-        <h1>
-          Test
-        </h1>
-        <h2>
-          test
-        </h2>
-      </div>
-    </main>
+      <main
+        class="main"
+      >
+        <div>
+          <h1>
+            Test
+          </h1>
+          <h2>
+            test
+          </h2>
+        </div>
+      </main>
+    </div>
   </div>
 </div>
 `;
@@ -705,36 +713,43 @@ exports[`Application should render opened navigation 1`] = `
           </Toolbar>
         </Toolbar>
       </header>
-      <main
-        className="main"
+      <div
+        className=""
       >
-        <Test
-          key="test"
-          router={
-            Object {
-              "route": Object {
-                "attributeDefaults": Object {},
-                "children": Array [],
-                "name": "test",
-                "options": Object {},
-                "parent": null,
-                "path": "/webspaces",
-                "rerenderAttributes": Array [],
-                "view": "test",
-              },
-            }
-          }
+        <main
+          className="main"
         >
-          <div>
-            <h1>
-              Test
-            </h1>
-            <h2>
-              test
-            </h2>
-          </div>
-        </Test>
-      </main>
+          <Test
+            key="test"
+            router={
+              Object {
+                "route": Object {
+                  "attributeDefaults": Object {},
+                  "children": Array [],
+                  "name": "test",
+                  "options": Object {},
+                  "parent": null,
+                  "path": "/webspaces",
+                  "rerenderAttributes": Array [],
+                  "view": "test",
+                },
+              }
+            }
+          >
+            <div>
+              <h1>
+                Test
+              </h1>
+              <h2>
+                test
+              </h2>
+            </div>
+          </Test>
+        </main>
+        <Sidebar
+          className="sidebar"
+        />
+      </div>
     </div>
   </div>
 </Application>

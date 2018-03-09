@@ -5,32 +5,9 @@ kind of a page or view component in which communicates with the `Sidebar`.
 
 The configuration object describes how the Sidebar should behave and which view should be rendered inside.
 
-Here is a basic usage example of the `Sidebar`:
+Here is a basic usage example how `withSidebar` could be used:
 
-```
-const sidebarViewRegistry = require('./registries/SidebarViewRegistry').default;
-const withSidebar = require('./withSidebar').default;
-const Sidebar = require('./Sidebar').default;
-
-class TestView extends React.PureComponent {
-    render() {
-        return (
-            <h1>Hello {this.props.title}</h1>
-        );
-    }
-}
-
-sidebarViewRegistry.clear();
-sidebarViewRegistry.add('test', TestView);
-
-class Page extends React.PureComponent {
-    render() {
-        return (
-            <h1>My awesome Page</h1>
-        );
-    }
-}
-
+```javascript static
 const PageWithSidebar = withSidebar(Page, function() {
     return {
         view: 'test',
@@ -39,11 +16,6 @@ const PageWithSidebar = withSidebar(Page, function() {
         },
     };
 });
-
-<div style={{display: 'flex'}}>
-    <PageWithSidebar />
-    <Sidebar />
-</div>
 ```
 
 In the above example a new sidebar-view was registered, used beside a component and passed some `props`.
