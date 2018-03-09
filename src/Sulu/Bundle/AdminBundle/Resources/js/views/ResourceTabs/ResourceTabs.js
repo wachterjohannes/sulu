@@ -79,9 +79,21 @@ class ResourceTabs extends React.Component<ViewProps> {
     }
 }
 
-export default withSidebar(ResourceTabs, function() {
+export default withSidebar(ResourceTabs, function () {
+    if (!this.resourceStore.id) {
+        return {};
+    }
+
+    const {
+        router,
+    } = this.props;
+
     return {
         view: 'preview',
+        props: {
+            resourceStore: this.resourceStore,
+            router: router,
+        },
         sizes: ['large', 'medium'],
     };
 });

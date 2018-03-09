@@ -13,11 +13,9 @@ import {fieldRegistry, Input, ResourceLocator, SingleSelect} from './containers/
 import FieldBlocks from './containers/FieldBlocks';
 import {viewRegistry} from './containers/ViewRenderer';
 import {ColumnListAdapter, datagridAdapterRegistry, FolderAdapter, TableAdapter} from './containers/Datagrid';
-import {sidebarViewRegistry} from './containers/Sidebar';
 import Form from './views/Form';
 import ResourceTabs from './views/ResourceTabs';
 import List from './views/List';
-import Preview from './views/Preview';
 import {bundleReady, bundlesReadyPromise} from './services/Bundles';
 import type {FieldTypeProps} from './types';
 
@@ -41,8 +39,6 @@ fieldRegistry.add('resource_locator', ResourceLocator);
 fieldRegistry.add('single_select', SingleSelect);
 fieldRegistry.add('text_line', Input);
 fieldRegistry.add('text_area', TextArea);
-
-sidebarViewRegistry.add('preview', Preview);
 
 function startApplication() {
     const router = new Router(createHistory());
