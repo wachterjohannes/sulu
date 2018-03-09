@@ -162,14 +162,15 @@ export default class Application extends React.Component<Props> {
                         local={true}
                         fixed={false}
                     />
-                    <header className={applicationStyles.header}>
-                        <Toolbar
-                            navigationOpen={this.navigationVisible}
-                            onNavigationButtonClick={this.handleNavigationButtonClick}
-                        />
-                    </header>
                     <div className={sidebarContainerClass}>
                         <main className={applicationStyles.main}>
+                            <header className={applicationStyles.header}>
+                                <Toolbar
+                                    navigationOpen={this.navigationVisible}
+                                    onNavigationButtonClick={this.handleNavigationButtonClick}
+                                />
+                            </header>
+
                             {router.route &&
                                 <ViewRenderer
                                     key={router.route.name}
