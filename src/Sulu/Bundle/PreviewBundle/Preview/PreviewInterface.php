@@ -22,7 +22,7 @@ interface PreviewInterface
     /**
      * Starts a new preview session.
      *
-     * @param string $objectClass Class of object
+     * @param string $providerKey Class of object
      * @param string $id Identifier of object
      * @param int $userId
      * @param string $webspaceKey
@@ -33,7 +33,7 @@ interface PreviewInterface
      *
      * @throws ProviderNotFoundException
      */
-    public function start($objectClass, $id, $userId, $webspaceKey, $locale, array $data = []);
+    public function start($providerKey, $id, $userId, $webspaceKey, $locale, array $data = []);
 
     /**
      * Stops the preview-session and deletes the data.
@@ -60,7 +60,7 @@ interface PreviewInterface
      * @param array $data Data which will be updated before re-rendering content
      * @param int $targetGroupId
      *
-     * @return array Changes for the rendering
+     * @return string Complete html response
      *
      * @throws ProviderNotFoundException
      * @throws TokenNotFoundException

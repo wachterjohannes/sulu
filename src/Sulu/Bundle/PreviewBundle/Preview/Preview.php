@@ -16,6 +16,7 @@ use Sulu\Bundle\PreviewBundle\Preview\Exception\ProviderNotFoundException;
 use Sulu\Bundle\PreviewBundle\Preview\Exception\TokenNotFoundException;
 use Sulu\Bundle\PreviewBundle\Preview\Object\PreviewObjectProviderInterface;
 use Sulu\Bundle\PreviewBundle\Preview\Renderer\PreviewRendererInterface;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Provider functionality to render and update preview instances.
@@ -42,19 +43,14 @@ class Preview implements PreviewInterface
      */
     private $renderer;
 
-    /**
-     * @param PreviewObjectProviderInterface[] $objectProviders
-     * @param Cache $dataCache
-     * @param PreviewRendererInterface $renderer
-     * @param int $cacheLifeTime
-     */
     public function __construct(
-        array $objectProviders,
+        array $objectProvidersForClass,
+        array $objectProvidersForKey,
         Cache $dataCache,
         PreviewRendererInterface $renderer,
-        $cacheLifeTime = 3600
+        int $cacheLifeTime = 3600
     ) {
-        $this->objectProviders = $objectProviders;
+        $this->objectProviders = array_merge($objectProvidersForClass, $objectProvidersForKey);
         $this->dataCache = $dataCache;
         $this->renderer = $renderer;
         $this->cacheLifeTime = $cacheLifeTime;
@@ -63,11 +59,11 @@ class Preview implements PreviewInterface
     /**
      * {@inheritdoc}
      */
-    public function start($objectClass, $id, $userId, $webspaceKey, $locale, array $data = [])
+    public function start($providerKey, $id, $userId, $webspaceKey, $locale, array $data = [])
     {
-        $provider = $this->getProvider($objectClass);
+        $provider = $this->getProvider($providerKey);
         $object = $provider->getObject($id, $locale);
-        $token = md5(sprintf('%s.%s.%s', $id, $locale, $userId));
+        $token = md5(sprintf('%s.%s.%s.%s', $providerKey, $id, $locale, $userId));
 
         if (0 !== count($data)) {
             $provider->setValues($object, $locale, $data);
@@ -113,11 +109,10 @@ class Preview implements PreviewInterface
         $this->save($token, $object);
 
         $id = $provider->getId($object);
-        $html = $this->renderer->render($object, $id, $webspaceKey, $locale, true, $targetGroupId);
+        $partialHtml = $this->renderer->render($object, $id, $webspaceKey, $locale, true, $targetGroupId);
+        $html = $this->fetchHtml($token);
 
-        $extractor = new RdfaExtractor($html);
-
-        return $extractor->getPropertyValues(array_keys($data));
+        return str_replace('<!-- CONTENT-REPLACER -->', $partialHtml, $html);
     }
 
     /**
@@ -144,7 +139,7 @@ class Preview implements PreviewInterface
 
         $this->save($token, $object);
 
-        return $this->renderer->render($object, $id, $webspaceKey, $locale, false, $targetGroupId);
+        return $this->doRender($token, $object, $id, $webspaceKey, $locale, false, $targetGroupId);
     }
 
     /**
@@ -155,36 +150,29 @@ class Preview implements PreviewInterface
         $object = $this->fetch($token);
         $id = $this->getProvider(get_class($object))->getId($object);
 
-        return $this->renderer->render($object, $id, $webspaceKey, $locale, false, $targetGroupId);
+        return $this->doRender($token, $object, $id, $webspaceKey, $locale, false, $targetGroupId);
     }
 
-    /**
-     * Returns provider for given object-class.
-     *
-     * @param string $objectClass
-     *
-     * @return mixed|PreviewObjectProviderInterface
-     *
-     * @throws ProviderNotFoundException
-     */
-    protected function getProvider($objectClass)
+    protected function doRender($token, $object, $id, $webspaceKey, $locale, $partial = false, $targetGroupId = null)
     {
-        if (!array_key_exists($objectClass, $this->objectProviders)) {
-            throw new ProviderNotFoundException($objectClass);
+        $html = $this->renderer->render($object, $id, $webspaceKey, $locale, $partial, $targetGroupId);
+        $crawler = new Crawler($html);
+
+        $this->saveHtml($token, str_replace($crawler->filter('#content')->html(), '<!-- CONTENT-REPLACER -->', $html));
+
+        return $html;
+    }
+
+    protected function getProvider(string $providerKey): PreviewObjectProviderInterface
+    {
+        if (!array_key_exists($providerKey, $this->objectProviders)) {
+            throw new ProviderNotFoundException($providerKey);
         }
 
-        return $this->objectProviders[$objectClass];
+        return $this->objectProviders[$providerKey];
     }
 
-    /**
-     * Save the object.
-     *
-     * @param string $token
-     * @param string $object
-     *
-     * @throws ProviderNotFoundException
-     */
-    protected function save($token, $object)
+    protected function save(string $token, $object): void
     {
         $data = $this->getProvider(get_class($object))->serialize($object);
         $data = sprintf("%s\n%s", get_class($object), $data);
@@ -192,17 +180,7 @@ class Preview implements PreviewInterface
         $this->dataCache->save($token, $data, $this->cacheLifeTime);
     }
 
-    /**
-     * Fetch the object.
-     *
-     * @param string $token
-     *
-     * @return mixed
-     *
-     * @throws ProviderNotFoundException
-     * @throws TokenNotFoundException
-     */
-    protected function fetch($token)
+    protected function fetch(string $token)
     {
         if (!$this->exists($token)) {
             throw new TokenNotFoundException($token);
@@ -211,5 +189,20 @@ class Preview implements PreviewInterface
         $cacheEntry = explode("\n", $this->dataCache->fetch($token), 2);
 
         return $this->getProvider($cacheEntry[0])->deserialize($cacheEntry[1], $cacheEntry[0]);
+    }
+
+    protected function saveHtml(string $token, string $html): void
+    {
+        $this->dataCache->save(sprintf('%s.html', $token), $html, $this->cacheLifeTime);
+    }
+
+    protected function fetchHtml(string $token): string
+    {
+        $cacheId = sprintf('%s.html', $token);
+        if (!$this->exists($cacheId)) {
+            throw new TokenNotFoundException($token);
+        }
+
+        return $this->dataCache->fetch($cacheId);
     }
 }

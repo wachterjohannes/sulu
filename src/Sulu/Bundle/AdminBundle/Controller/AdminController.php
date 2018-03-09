@@ -118,6 +118,16 @@ class AdminController
      */
     private $fallbackLocale;
 
+    /**
+     * @var int
+     */
+    private $delay;
+
+    /**
+     * @var string
+     */
+    private $previewMode;
+
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         UrlGeneratorInterface $urlGenerator,
@@ -135,7 +145,9 @@ class AdminController
         $suluVersion,
         $translatedLocales,
         $translations,
-        $fallbackLocale
+        $fallbackLocale,
+        $delay,
+        $previewMode
     ) {
         $this->authorizationChecker = $authorizationChecker;
         $this->urlGenerator = $urlGenerator;
@@ -154,6 +166,8 @@ class AdminController
         $this->translatedLocales = $translatedLocales;
         $this->translations = $translations;
         $this->fallbackLocale = $fallbackLocale;
+        $this->delay = $delay;
+        $this->previewMode = $previewMode;
     }
 
     /**
@@ -212,6 +226,16 @@ class AdminController
     {
         $view = View::create([
             'routes' => $this->adminPool->getRoutes(),
+            'sulu_preview' => [
+                'routes' => [
+                    'start' => $this->urlGenerator->generate('sulu_preview.start'),
+                    'render' => $this->urlGenerator->generate('sulu_preview.render'),
+                    'update' => $this->urlGenerator->generate('sulu_preview.update'),
+                    'stop' => $this->urlGenerator->generate('sulu_preview.stop'),
+                ],
+                'debounceDelay' => $this->delay,
+                'mode' => $this->previewMode,
+            ]
         ]);
         $view->setFormat('json');
 

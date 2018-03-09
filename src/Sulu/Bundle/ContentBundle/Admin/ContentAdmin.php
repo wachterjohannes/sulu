@@ -136,6 +136,7 @@ class ContentAdmin extends Admin
             // edit form
             (new Route('sulu_content.page_edit_form', '/webspaces/:webspace/:locale/:id', 'sulu_admin.resource_tabs'))
                 ->addOption('locales', true)
+                ->addOption('preview', true)
                 ->addOption('resourceKey', 'pages'),
             (new Route('sulu_content.page_edit_form.detail', '/details', 'sulu_content.page_form'))
                 ->addOption('tabTitle', 'sulu_content.page_form_detail')

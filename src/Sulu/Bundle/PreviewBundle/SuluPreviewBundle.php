@@ -27,8 +27,18 @@ class SuluPreviewBundle extends Bundle
     {
         parent::build($container);
 
+        // TODO remove when removing old UI
         $container->addCompilerPass(
             new TaggedServiceCollectorCompilerPass('sulu_preview.preview', 'sulu_preview.object_provider', 0, 'class')
+        );
+
+        $container->addCompilerPass(
+            new TaggedServiceCollectorCompilerPass(
+                'sulu_preview.preview',
+                'sulu_preview.object_provider',
+                1,
+                'provider-key'
+            )
         );
     }
 }

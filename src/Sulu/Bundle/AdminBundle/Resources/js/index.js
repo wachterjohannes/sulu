@@ -13,11 +13,9 @@ import {fieldRegistry, Input, ResourceLocator, SingleSelect} from './containers/
 import FieldBlocks from './containers/FieldBlocks';
 import {viewRegistry} from './containers/ViewRenderer';
 import {ColumnListAdapter, datagridAdapterRegistry, FolderAdapter, TableAdapter} from './containers/Datagrid';
-import {sidebarViewRegistry} from './containers/Sidebar';
 import Form from './views/Form';
 import ResourceTabs from './views/ResourceTabs';
 import List from './views/List';
-import Preview from './views/Preview';
 import {bundleReady, bundlesReadyPromise} from './services/Bundles';
 import type {FieldTypeProps} from './types';
 
@@ -42,8 +40,6 @@ fieldRegistry.add('single_select', SingleSelect);
 fieldRegistry.add('text_line', Input);
 fieldRegistry.add('text_area', TextArea);
 
-sidebarViewRegistry.add('preview', Preview);
-
 function startApplication() {
     const router = new Router(createHistory());
     const id = 'application';
@@ -59,8 +55,11 @@ function startApplication() {
 const translationPromise = Requester.get('/admin/v2/translations?locale=en')
     .then((response) => setTranslations(response));
 
-const configPromise = Requester.get('/admin/v2/config')
-    .then((response) => routeRegistry.addCollection(response.routes));
+const configPromise = Requester.get('/admin/v2/config').then((response) => {
+    routeRegistry.addCollection(response.routes);
+
+    return response;
+});
 
 Promise.all([
     translationPromise,
@@ -69,3 +68,5 @@ Promise.all([
 ]).then(startApplication);
 
 bundleReady();
+
+export {configPromise};

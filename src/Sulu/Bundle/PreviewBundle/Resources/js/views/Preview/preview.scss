@@ -1,0 +1,15 @@
+@import '../../../../../AdminBundle/Resources/js/containers/Application/colors.scss';
+
+$previewBackgroundColor: $white;
+$toolbarHeight: 60px;
+
+.container {
+    height: 100%;
+    background-color: $previewBackgroundColor;
+}
+
+.iframe {
+    width: 100%;
+    height: calc(100% - $toolbarHeight);
+    border: 0;
+}

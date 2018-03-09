@@ -15,18 +15,19 @@ class ResourceTabs extends React.Component<ViewProps> {
     resourceStore: ResourceStore;
 
     componentWillMount() {
-        const {router, route} = this.props;
         const {
-            attributes: {
-                id,
+            router: {
+                attributes: {
+                    id,
+                },
             },
-        } = router;
-        const {
-            options: {
-                resourceKey,
-                locales,
+            route: {
+                options: {
+                    resourceKey,
+                    locales,
+                },
             },
-        } = route;
+        } = this.props;
 
         const options = {};
         if ((typeof locales === 'boolean' && locales === true) || (Array.isArray(locales) && locales.length > 0)) {
@@ -50,7 +51,7 @@ class ResourceTabs extends React.Component<ViewProps> {
         const ChildComponent = children ? children({resourceStore: this.resourceStore}) : null;
         const loader = (
             <div className={resourceTabsStyle.loader}>
-                <Loader />
+                <Loader/>
             </div>
         );
 
@@ -79,9 +80,26 @@ class ResourceTabs extends React.Component<ViewProps> {
     }
 }
 
-export default withSidebar(ResourceTabs, function() {
+export default withSidebar(ResourceTabs, function () {
+    const {
+        router,
+        route: {
+            options: {
+                preview,
+            },
+        },
+    } = this.props;
+
+    if (!preview) {
+        return {};
+    }
+
     return {
         view: 'preview',
+        props: {
+            resourceStore: this.resourceStore,
+            router: router,
+        },
         sizes: ['large', 'medium'],
     };
 });
