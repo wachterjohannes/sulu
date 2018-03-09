@@ -94,12 +94,6 @@ export default class Application extends React.Component<Props> {
 
     renderNavigation() {
         const {router} = this.props;
-        const sidebarClass = classNames(
-            applicationStyles.sidebar,
-            {
-                [applicationStyles[sidebarStore.size]]: sidebarStore.size,
-            }
-        );
 
         return (
             <Navigation
@@ -145,6 +139,17 @@ export default class Application extends React.Component<Props> {
                 [applicationStyles.navigationVisible]: this.navigationVisible,
             }
         );
+        const sidebarClass = classNames(
+            applicationStyles.sidebar,
+            {
+                [applicationStyles[sidebarStore.size]]: sidebarStore.size,
+            }
+        );
+        const sidebarContainerClass = classNames(
+            {
+                [applicationStyles.withSidebar]: sidebarStore.view,
+            }
+        );
 
         return (
             <div className={rootClass}>
@@ -163,17 +168,19 @@ export default class Application extends React.Component<Props> {
                             onNavigationButtonClick={this.handleNavigationButtonClick}
                         />
                     </header>
-                    <main className={applicationStyles.main}>
-                        {router.route &&
-                            <ViewRenderer
-                                key={router.route.name}
-                                router={router}
-                            />
-                        }
-                    </main>
-                    <Sidebar
-                        className={sidebarClass}
-                    />
+                    <div className={sidebarContainerClass}>
+                        <main className={applicationStyles.main}>
+                            {router.route &&
+                                <ViewRenderer
+                                    key={router.route.name}
+                                    router={router}
+                                />
+                            }
+                        </main>
+                        <Sidebar
+                            className={sidebarClass}
+                        />
+                    </div>
                 </div>
             </div>
         );

@@ -1,6 +1,5 @@
+@import './variables.scss';
 @import '../Toolbar/toolbar.scss';
-
-$sidebarShrinkAnimationDuration: 700ms;
 
 .root {
     width: calc(100vw + 260px);
@@ -17,19 +16,18 @@ $sidebarShrinkAnimationDuration: 700ms;
 
 .content {
     width: 100vw;
-    flex-shrink: 0;
     min-height: 500px;
+    overflow: scroll;
+
+    .with-sidebar {
+        display: flex;
+    }
 }
 
 .main {
     height: 100vh;
     overflow-y: auto;
-    display: flex;
-}
-
-.content {
     flex: 2;
-    overflow: scroll;
 }
 
 .sidebar {

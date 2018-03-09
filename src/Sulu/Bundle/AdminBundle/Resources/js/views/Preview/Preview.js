@@ -7,7 +7,7 @@ import Icon from '../../components/Icon/Icon';
 type Props = {};
 
 @observer
-export default class Preview extends React.PureComponent<Props> {
+export default class Preview extends React.Component<Props> {
     handleToggleSidebarClick = () => {
         if (sidebarStore.size === 'medium') {
             return sidebarStore.setSize('large');
