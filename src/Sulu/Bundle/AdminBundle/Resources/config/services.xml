@@ -29,6 +29,7 @@
             <argument>%sulu_core.translated_locales%</argument>
             <argument>%sulu_core.translations%</argument>
             <argument>%sulu_core.fallback_locale%</argument>
+            <argument>%sulu_preview.delay%</argument>
 
             <tag name="sulu.context" context="admin"/>
         </service>

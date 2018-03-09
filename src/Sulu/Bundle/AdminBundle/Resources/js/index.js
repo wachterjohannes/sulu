@@ -55,8 +55,11 @@ function startApplication() {
 const translationPromise = Requester.get('/admin/v2/translations?locale=en')
     .then((response) => setTranslations(response));
 
-const configPromise = Requester.get('/admin/v2/config')
-    .then((response) => routeRegistry.addCollection(response.routes));
+const configPromise = Requester.get('/admin/v2/config').then((response) => {
+    routeRegistry.addCollection(response.routes);
+
+    return response;
+});
 
 Promise.all([
     translationPromise,
@@ -65,3 +68,5 @@ Promise.all([
 ]).then(startApplication);
 
 bundleReady();
+
+export {configPromise};

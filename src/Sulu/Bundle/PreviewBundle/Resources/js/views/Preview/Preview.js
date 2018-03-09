@@ -9,6 +9,9 @@ import {Icon} from 'sulu-admin-bundle/components';
 import ResourceStore from 'sulu-admin-bundle/stores/ResourceStore';
 import Requester from 'sulu-admin-bundle/services/Requester';
 import PreviewStyles from './preview.scss';
+import previewConfigStore from './stores/PreviewConfigStore';
+
+// TODO start-mode
 
 type Props = {
     resourceStore: ResourceStore,
@@ -30,8 +33,12 @@ export default class Preview extends React.Component<Props> {
             },
         } = this.props;
 
-        // TODO where to get URL?
-        Requester.get('/admin/preview/start?provider=' + resourceStore.resourceKey + '&webspace=' + webspace + '&locale=' + locale + '&id=' + resourceStore.id).then((response) => {
+        Requester.get(previewConfigStore.generateRoute('start', {
+            provider: resourceStore.resourceKey,
+            webspace: webspace,
+            locale: locale,
+            id: resourceStore.id,
+        })).then((response) => {
             this.setToken(response.token);
         });
 
@@ -44,22 +51,32 @@ export default class Preview extends React.Component<Props> {
         });
     }
 
-    // TODO get debounce wait from symfony-config
     updatePreview = lodash.debounce((data) => {
-        // TODO where to get URL?
-        Requester.post('/admin/preview/update?webspace=example&locale=en&token=' + this.token, {data: data}).then((response) => {
+        const {
+            router: {
+                attributes: {
+                    locale,
+                    webspace,
+                },
+            },
+        } = this.props;
+
+        Requester.post(previewConfigStore.generateRoute('update', {
+            webspace: webspace,
+            locale: locale,
+            token: this.token,
+        }), {data: data}).then((response) => {
             const document = this.getPreviewDocument();
             document.open();
             document.write(response.content);
             document.close();
         });
-    }, 250);
+    }, previewConfigStore.debounceDelay);
 
     componentWillUnmount() {
         this.disposer();
 
-        // TODO where to get URL?
-        Requester.get('/admin/preview/stop?token=' + this.token);
+        Requester.get(previewConfigStore.generateRoute('stop', {token: this.token}));
     }
 
     getPreviewDocument() {
@@ -105,8 +122,11 @@ export default class Preview extends React.Component<Props> {
             },
         } = this.props;
 
-        // TODO where to get URL?
-        const url = '/admin/preview/render?webspace=' + webspace + '&locale=' + locale + '&token=' + this.token;
+        const url = previewConfigStore.generateRoute('render', {
+            webspace: webspace,
+            locale: locale,
+            token: this.token,
+        });
 
         return (
             <div className={PreviewStyles.container}>
