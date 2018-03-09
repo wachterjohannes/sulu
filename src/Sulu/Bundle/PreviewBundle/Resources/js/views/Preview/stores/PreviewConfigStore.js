@@ -25,6 +25,14 @@ class PreviewConfigStore {
         return this.config.debounceDelay;
     }
 
+    @computed get mode(): ?string {
+        if (!this.config) {
+            return null;
+        }
+
+        return this.config.mode;
+    }
+
     generateRoute(name: string, options: Object) {
         return this.routes[name] + '?' + queryString.stringify(options);
     }

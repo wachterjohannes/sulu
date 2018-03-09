@@ -7,6 +7,10 @@ import Preview, {previewConfigStore} from './views/Preview';
 configPromise.then((response) => {
     previewConfigStore.setConfig(response['sulu_preview']);
 
+    if (previewConfigStore.mode === 'off') {
+        sidebarViewRegistry.disable('preview');
+    }
+
     return response;
 });
 

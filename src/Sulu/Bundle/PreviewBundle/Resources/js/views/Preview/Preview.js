@@ -11,8 +11,6 @@ import Requester from 'sulu-admin-bundle/services/Requester';
 import PreviewStyles from './preview.scss';
 import previewConfigStore from './stores/PreviewConfigStore';
 
-// TODO start-mode
-
 type Props = {
     resourceStore: ResourceStore,
 };
@@ -21,8 +19,15 @@ type Props = {
 export default class Preview extends React.Component<Props> {
     @observable iframe;
     @observable token: string;
+    @observable started: boolean = false;
 
     componentWillMount() {
+        if (previewConfigStore.mode === 'auto') {
+            this.startPreview();
+        }
+    }
+
+    @action startPreview() {
         const {
             resourceStore,
             router: {
@@ -49,6 +54,8 @@ export default class Preview extends React.Component<Props> {
 
             this.updatePreview(toJS(resourceStore.data));
         });
+
+        this.started = true;
     }
 
     updatePreview = lodash.debounce((data) => {
@@ -74,8 +81,11 @@ export default class Preview extends React.Component<Props> {
     }, previewConfigStore.debounceDelay);
 
     componentWillUnmount() {
-        this.disposer();
+        if (!this.disposer) {
+            return;
+        }
 
+        this.disposer();
         Requester.get(previewConfigStore.generateRoute('stop', {token: this.token}));
     }
 
@@ -109,8 +119,12 @@ export default class Preview extends React.Component<Props> {
     };
 
     render() {
+        if (this.started === false) {
+            return <button onClick={this.startPreview.bind(this)}>Start</button>;
+        }
+
         if (!this.token) {
-            return <h1>loading ...</h1>;
+            return <h1>Loading ...</h1>;
         }
 
         const {
