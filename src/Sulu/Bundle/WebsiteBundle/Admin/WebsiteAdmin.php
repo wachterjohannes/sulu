@@ -26,14 +26,18 @@ class WebsiteAdmin extends Admin
 {
     /**
      * Returns security context for analytics in given webspace.
-     *
-     * @param string $webspaceKey
-     *
-     * @return string
      */
-    public static function getAnalyticsSecurityContext($webspaceKey)
+    public static function getAnalyticsSecurityContext(string $webspaceKey): string
     {
         return \sprintf('%s%s.%s', PageAdmin::SECURITY_CONTEXT_PREFIX, $webspaceKey, 'analytics');
+    }
+
+    /**
+     * Returns security context for analytics in given webspace.
+     */
+    public static function getSettingsSecurityContext(string $webspaceKey): string
+    {
+        return \sprintf('%s%s.%s', PageAdmin::SECURITY_CONTEXT_PREFIX, $webspaceKey, 'settings');
     }
 
     /**
@@ -76,6 +80,25 @@ class WebsiteAdmin extends Admin
         ];
 
         if ($this->hasSomeWebspaceAnalyticsPermission()) {
+            $viewCollection->add(
+                $this->viewBuilderFactory
+                    ->createFormOverlayListViewBuilder('sulu_webspace.analytics_list', '/analytics')
+                    ->setResourceKey('analytics')
+                    ->setListKey('analytics')
+                    ->addListAdapters(['table_light'])
+                    ->addRouterAttributesToListRequest(['webspace'])
+                    ->addRouterAttributesToFormRequest(['webspace'])
+                    ->disableSearching()
+                    ->setFormKey('analytic_details')
+                    ->setTabTitle('sulu_website.analytics')
+                    ->setTabOrder(2048)
+                    ->addToolbarActions($listToolbarActions)
+                    ->setParent(PageAdmin::WEBSPACE_TABS_VIEW)
+                    ->addRerenderAttribute('webspace')
+            );
+        }
+
+        if ($this->hasSomeWebspaceSettingsPermission()) {
             $viewCollection->add(
                 $this->viewBuilderFactory
                     ->createFormOverlayListViewBuilder('sulu_webspace.analytics_list', '/analytics')
@@ -155,6 +178,22 @@ class WebsiteAdmin extends Admin
             );
 
             if ($hasWebspaceAnalyticsPermission) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function hasSomeWebspaceSettingsPermission(): bool
+    {
+        foreach ($this->webspaceManager->getWebspaceCollection()->getWebspaces() as $webspace) {
+            $hasWebspaceSettingsPermission = $this->securityChecker->hasPermission(
+                self::getSettingsSecurityContext($webspace->getKey()),
+                PermissionTypes::EDIT
+            );
+
+            if ($hasWebspaceSettingsPermission) {
                 return true;
             }
         }

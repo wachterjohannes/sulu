@@ -11,6 +11,7 @@
 
 namespace Sulu\Component\Webspace;
 
+use Sulu\Bundle\AdminBundle\Metadata\SchemaMetadata\PropertyMetadata;
 use Sulu\Component\Localization\Localization;
 use Sulu\Component\Util\ArrayableInterface;
 
@@ -121,6 +122,11 @@ class Webspace implements ArrayableInterface
      * @var string
      */
     private $resourceLocatorStrategy;
+
+    /**
+     * @var PropertyMetadata[]|null
+     */
+    private $properties;
 
     /**
      * Sets the key of the webspace.
@@ -557,6 +563,17 @@ class Webspace implements ArrayableInterface
     public function getResourceLocatorStrategy()
     {
         return $this->resourceLocatorStrategy;
+    }
+
+    public function getProperties(): ?array
+    {
+        return $this->properties;
+    }
+
+    public function setProperties(?array $properties): Webspace
+    {
+        $this->properties = $properties;
+        return $this;
     }
 
     public function toArray($depth = null)

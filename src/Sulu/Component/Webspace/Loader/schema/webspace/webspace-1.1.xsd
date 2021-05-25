@@ -3,6 +3,9 @@
            targetNamespace="http://schemas.sulu.io/webspace/webspace" xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:webspace="http://schemas.sulu.io/webspace/webspace"
            xmlns="http://schemas.sulu.io/webspace/webspace">
+
+    <xs:include schemaLocation="../../../../Content/Metadata/Loader/schema/properties-1.0.xsd"/>
+
     <xs:complexType name="webspaceType">
         <xs:all>
             <xs:element type="xs:string" name="name"/>
@@ -21,6 +24,7 @@
             <xs:element type="templatesType" name="templates" minOccurs="0" maxOccurs="1"/>
             <xs:element type="excludedTemplatesType" name="excluded-templates" minOccurs="0" maxOccurs="1"/>
             <xs:element type="navigationType" name="navigation"/>
+            <xs:element name="properties" type="propertiesType"/>
             <xs:element type="resource-locatorType" name="resource-locator" maxOccurs="1" minOccurs="0"/>
             <xs:element type="portalsType" name="portals"/>
         </xs:all>

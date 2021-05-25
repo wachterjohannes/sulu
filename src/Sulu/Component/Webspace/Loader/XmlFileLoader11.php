@@ -11,6 +11,7 @@
 
 namespace Sulu\Component\Webspace\Loader;
 
+use Sulu\Component\Content\Metadata\Parser\PropertiesXmlParser;
 use Sulu\Component\Webspace\Loader\Exception\ExpectedDefaultTemplatesNotFound;
 use Sulu\Component\Webspace\Webspace;
 
@@ -24,9 +25,23 @@ class XmlFileLoader11 extends XmlFileLoader10
 
     const SCHEMA_URI = 'http://schemas.sulu.io/webspace/webspace-1.1.xsd';
 
+    /**
+     * @var PropertiesXmlParser
+     */
+    private $propertiesXmlParser;
+
     protected function parseXml($file)
     {
         $webspace = parent::parseXml($file);
+
+        $propertiesNode = $this->xpath->query('/x:webspace/x:properties')->item(0);
+        if (null !== $propertiesNode) {
+            $webspace->setProperties($this->propertiesXmlParser->load(
+                $tags,
+                $this->xpath,
+                $propertiesNode
+            ));
+        }
 
         $strategyNode = $this->xpath->query('/x:webspace/x:resource-locator/x:strategy')->item(0);
         if (null !== $strategyNode) {
@@ -36,6 +51,7 @@ class XmlFileLoader11 extends XmlFileLoader10
         }
 
         $this->generateExcludedTemplates($webspace);
+
 
         return $webspace;
     }

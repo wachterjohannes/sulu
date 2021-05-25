@@ -57,6 +57,12 @@ class SuluWebsiteExtension extends Extension implements PrependExtensionInterfac
                                 'detail' => 'sulu_website.get_webspace_analytics',
                             ],
                         ],
+                        'webspace_settings' => [
+                            'routes' => [
+                                'list' => 'sulu_website.cget_webspace_settings',
+                                'detail' => 'sulu_website.get_webspace_settings',
+                            ],
+                        ],
                     ],
                 ]
             );
