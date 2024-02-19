@@ -22,6 +22,7 @@ use Sulu\Component\Content\Metadata\Factory\Exception\DocumentTypeNotFoundExcept
 use Sulu\Component\Content\Metadata\Factory\Exception\StructureTypeNotFoundException;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\ItemMetadata;
+use Sulu\Component\DocumentManager\MetadataFactoryInterface;
 use Sulu\Component\PHPCR\PropertyParser\Property;
 use Sulu\Component\PHPCR\PropertyParser\PropertyParserInterface;
 use Symfony\Component\Console\Command\Command;
@@ -44,6 +45,7 @@ class PhpCRCleanerCommand extends Command
         private PropertyParserInterface $propertyParser,
         private SessionInterface $session,
         private StructureMetadataFactoryInterface $structureMetaDataFactory,
+        private MetadataFactoryInterface $documentMetaDataFactory,
         private array $mapping,
     ) {
         parent::__construct();
@@ -76,6 +78,9 @@ class PhpCRCleanerCommand extends Command
             if (null === $alias || !$this->structureMetaDataFactory->hasStructuresFor($alias)) {
                 continue;
             }
+
+            $documentMetadata = $this->documentMetaDataFactory->getMetadataForAlias($alias);
+            $fieldMappings = $documentMetadata->getFieldMappings(); // check if that is enough to identify root level properties.
 
             $propertyData = $this->propertyParser->parse($node->getPropertiesValues('i18n:*'));
 
