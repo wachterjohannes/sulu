@@ -10,6 +10,55 @@ const defaultOptions = {
     },
 };
 
+const eventStreams = {};
+const waitFor = {};
+
+function isMercureResponse(response): boolean {
+    return null !== response.headers.get('Link')
+        && null !== response.headers.get('Link').match(/<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/);
+}
+
+function openMercureConnection(response: Response): void {
+    // Extract the hub URL and topic from the Link header
+    const hubUrl = response.headers.get('Link').match(/<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/)[1];
+    const topic = response.headers.get('Link').match(/<([^>]+)>;\s+rel=(?:mercure|"[^"]*topic[^"]*")/)[1];
+
+    if (eventStreams[topic]) {
+        return;
+    }
+
+    // Append the topic(s) to subscribe as query parameter
+    const h = new URL(hubUrl);
+    h.searchParams.append('topic', topic);
+
+    // Subscribe to updates
+    eventStreams[topic] = new EventSource(h);
+    eventStreams[topic].onmessage = e => {
+        const data = JSON.parse(e.data);
+        if (waitFor[e.lastEventId]) {
+            waitFor[e.lastEventId](data);
+            waitFor[e.lastEventId] = null;
+        } else {
+            waitFor[e.lastEventId] = data;
+        }
+    };
+}
+
+function handleMercureResponse(response: Response): void {
+    const updateId = response.headers.get('Update');
+
+    if (waitFor[updateId]) {
+        const result = waitFor[updateId];
+        waitFor[updateId] = null;
+
+        return Promise.resolve(result);
+    }
+
+    return new Promise((resolve, reject) => {
+        waitFor[updateId] = resolve;
+    });
+}
+
 function transformResponseObject(data: Object) {
     return Object.keys(data).reduce((transformedData: Object, key) => {
         const value = data[key];
@@ -105,6 +154,14 @@ function handleResponse(response: Response): Promise<Object | Array<Object>> {
 
     if (!response.ok) {
         return Promise.reject(response);
+    }
+
+    if (response.status === 202) {
+        return handleMercureResponse(response);
+    }
+
+    if (isMercureResponse(response)) {
+        openMercureConnection(response);
     }
 
     if (response.status === 204) {
