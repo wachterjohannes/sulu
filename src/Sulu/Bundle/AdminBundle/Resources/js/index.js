@@ -123,6 +123,8 @@ import {navigationRegistry} from './containers/Navigation';
 import {smartContentConfigStore} from './containers/SmartContent';
 import PreviewForm from './views/PreviewForm';
 import FormOverlayList from './views/FormOverlayList';
+import Subscription from './views/Subscription';
+import {setSubscriptionConfig} from './views/Subscription/subscriptionConfig';
 import {initializeJexl} from './utils/jexl';
 import {ExternalLinkTypeOverlay, linkOverlayRegistry, LinkTypeOverlay} from './containers/Link';
 import linkTypeRegistry from './containers/Link/registries/linkTypeRegistry';
@@ -206,6 +208,7 @@ function registerViews() {
         AuthorizationConsent,
         {disableDefaultSpacing: true, fullscreen: true}
     );
+    viewRegistry.add('sulu_ai_platform.subscription', Subscription);
 }
 
 function registerListAdapters() {
@@ -454,6 +457,10 @@ function startAdmin() {
         applicationElement
     );
 }
+
+initializer.addUpdateConfigHook('sulu_ai_platform', (config: Object) => {
+    setSubscriptionConfig(config?.['subscription']);
+});
 
 initializer.addUpdateConfigHook('sulu_ai', (config: Object, initialized: boolean) => {
     if (initialized) {
