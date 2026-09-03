@@ -70,16 +70,7 @@ final class AdminArticleReindexProvider implements ReindexProviderInterface
 
         /** @var Article $article */
         foreach ($articles as $article) {
-            $groupIdentifier = null;
-
-            foreach ($groups as $group) {
-                if (\in_array($article['templateKey'], $group->templates)) {
-                    $groupIdentifier = $group->identifier;
-                    break;
-                }
-            }
-
-            $groupIdentifier ??= GroupProviderInterface::DEFAULT_GROUP;
+            $groupIdentifier = $this->groupProvider->resolveGroup(ArticleInterface::TEMPLATE_TYPE, $article['templateKey']);
             $securityContext = ArticleAdmin::getArticleSecurityContext($groupIdentifier);
             if (1 === \count($groups) || GroupProviderInterface::DEFAULT_GROUP === $groupIdentifier) {
                 $securityContext = ArticleAdmin::SECURITY_CONTEXT;
