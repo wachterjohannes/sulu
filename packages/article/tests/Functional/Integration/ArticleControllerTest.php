@@ -498,6 +498,14 @@ class ArticleControllerTest extends SuluTestCase
         $this->assertResponseSnapshot('article_cget.json', $response, 200);
     }
 
+    public function testGetListWithUnknownGroupsFilterReturnsNoResults(): void
+    {
+        // an unknown/typo'd group identifier must not be silently dropped and return every article
+        $this->client->request('GET', '/admin/api/articles?locale=en&groups=does-not-exist');
+        $response = $this->client->getResponse();
+        $this->assertResponseSnapshot('article_cget_unknown_groups_filter.json', $response, 200);
+    }
+
     #[Depends('testPost')]
     public function testDeleteSingleLocale(string $id): string
     {

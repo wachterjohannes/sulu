@@ -76,14 +76,14 @@ final class ArticleController implements SecuredControllerInterface
         $groupTemplates = [];
         $groups = $this->groupProvider->getGroups(ArticleInterface::TEMPLATE_TYPE);
         foreach ($groups as $group) {
-            if (\in_array($group->identifier, $groupIdentifiers)) {
+            if (\in_array($group->identifier, $groupIdentifiers, true)) {
                 $groupTemplates = \array_merge($groupTemplates, $group->templates);
             }
         }
 
         $templateKeysParam = $request->query->getString('templateKeys', '');
-        $templateKeys = \array_filter(\explode(',', $templateKeysParam));
-        $templateKeys = \array_unique(\array_merge($templateKeys, $groupTemplates));
+        $requestedTemplateKeys = \array_filter(\explode(',', $templateKeysParam));
+        $templateKeys = \array_unique(\array_merge($requestedTemplateKeys, $groupTemplates));
 
         // TODO this should be ArticleRepository::findFlatBy / ::countFlatBy methods
         //      but first we would need to avoid that the restHelper requires the request.
@@ -115,6 +115,27 @@ final class ArticleController implements SecuredControllerInterface
             $listBuilder->addSelectField($fieldDescriptors['ghostLocale']);
         }
         $listBuilder->setParameter('locale', $this->getLocale($request));
+
+        $templateFilterRequested = [] !== $groupIdentifiers || [] !== $requestedTemplateKeys;
+        if ($templateFilterRequested && 0 === \count($templateKeys)) {
+            // the requested groups/templateKeys did not resolve to any known template key, so the
+            // filter must not be dropped silently (an empty `in()` call has no effect on the query
+            // and would return every article instead of none)
+            $listRepresentation = new PaginatedRepresentation(
+                [],
+                ArticleInterface::RESOURCE_KEY,
+                (int) $listBuilder->getCurrentPage(),
+                (int) $listBuilder->getLimit(),
+                0,
+            );
+
+            return new JsonResponse($this->normalizer->normalize(
+                $listRepresentation->toArray(),
+                'json',
+                ['sulu_admin' => true, 'sulu_admin_article' => true, 'sulu_admin_article_list' => true],
+            ));
+        }
+
         if (0 !== \count($templateKeys)) {
             $listBuilder->in($fieldDescriptors['templateKey'], $templateKeys);
         }
