@@ -212,7 +212,7 @@ function registerViews() {
         {disableDefaultSpacing: true, fullscreen: true}
     );
     viewRegistry.add('sulu_ai_platform.subscription', Subscription);
-    viewRegistry.add('sulu_admin.request_log', RequestLog);
+    viewRegistry.add('sulu_ai_platform.request_log', RequestLog);
 }
 
 function registerListAdapters() {
