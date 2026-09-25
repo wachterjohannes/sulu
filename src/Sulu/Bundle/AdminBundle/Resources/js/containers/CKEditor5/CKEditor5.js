@@ -17,6 +17,7 @@ import configRegistry from './registries/configRegistry';
 import pluginRegistry from './registries/pluginRegistry';
 import type {IObservableValue} from 'mobx/lib/mobx';
 import type {ElementRef} from 'react';
+import '@ckeditor/ckeditor5-theme-lark/dist/index.css';
 import '@ckeditor/ckeditor5-ui/dist/index.css';
 import '@ckeditor/ckeditor5-editor-classic/dist/index.css';
 import '@ckeditor/ckeditor5-alignment/dist/index.css';
@@ -195,8 +196,7 @@ export default class CKEditor5 extends React.Component<Props> {
         };
 
         ClassicEditor
-            .create({
-                attachTo: this.containerRef,
+            .create(this.containerRef, {
                 plugins: [
                     Alignment,
                     Bold,

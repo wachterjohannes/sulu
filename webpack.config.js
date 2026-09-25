@@ -33,6 +33,8 @@ module.exports = (env, argv) => { // eslint-disable-line no-undef
     const ManifestPlugin = require(path.resolve(nodeModulesPath, 'webpack-manifest-plugin')).WebpackManifestPlugin;
     const MiniCssExtractPlugin = require(path.resolve(nodeModulesPath, 'mini-css-extract-plugin'));
     const CssMinimizerPlugin = require(path.resolve(nodeModulesPath, 'css-minimizer-webpack-plugin'));
+    const postcssMixins = require(path.resolve(nodeModulesPath, 'postcss-mixins'));
+    const postcssNesting = require(path.resolve(nodeModulesPath, 'postcss-nesting'));
 
     return {
         entry: [path.resolve(__dirname, 'index.js')], // eslint-disable-line no-undef
@@ -112,6 +114,20 @@ module.exports = (env, argv) => { // eslint-disable-line no-undef
                         // style loader not required: https://github.com/webpack-contrib/css-loader#recommend
 
                         'css-loader',
+                        {
+                            // CKEditor5 ships its dist CSS with unprocessed postcss-mixins
+                            // @define-mixin/@mixin rules (e.g. button/icon sizing); without this,
+                            // those declarations are silently dropped by the browser.
+                            loader: 'postcss-loader',
+                            options: {
+                                postcssOptions: {
+                                    plugins: [
+                                        postcssMixins(),
+                                        postcssNesting({noIsPseudoSelector: true}),
+                                    ],
+                                },
+                            },
+                        },
                     ],
                 },
                 {
